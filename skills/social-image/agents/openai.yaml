@@ -1,4 +1,4 @@
 interface:
   display_name: "Social Image"
-  short_description: "Analyze content and compose the Geist social post image"
-  default_prompt: "Use $social-image to make the post image. I will give you the full content and the social post copy; analyze both and create the image for the content."
+  short_description: "Compose and validate brand-aware social graphics"
+  default_prompt: "Use $social-image to turn my source content and social copy into a validated, editable social image set."

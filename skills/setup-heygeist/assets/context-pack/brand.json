@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "id": "heygeist",
+  "display_name": "HeyGeist",
+  "context": "context.md",
+  "caption_contract": "caption.md",
+  "visual_contract": "visual.md",
+  "theme": "theme.css",
+  "optional_assets": {}
+}

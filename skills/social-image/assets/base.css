@@ -1,0 +1,212 @@
+/* Portable social-image grammar. Copy this file into each project and adjust
+   only the token block and font declarations for the supplied brand. */
+
+/* SOCIAL-IMAGE-TOKENS:START */
+:root {
+  --si-bg: #f7f5f0;
+  --si-fg: #171717;
+  --si-accent: #ff5c35;
+  --si-muted: #66645f;
+  --si-surface: #ffffff;
+  --si-border: #d9d5cc;
+  --si-display-font: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --si-body-font: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+/* SOCIAL-IMAGE-TOKENS:END */
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html,
+body {
+  width: 2048px;
+  height: 2048px;
+  overflow: hidden;
+}
+
+html[data-canvas="landscape"],
+html[data-canvas="landscape"] body {
+  width: 1200px;
+  height: 630px;
+}
+
+html[data-canvas="portrait"],
+html[data-canvas="portrait"] body {
+  width: 1080px;
+  height: 1350px;
+}
+
+body {
+  background: var(--si-bg);
+  color: var(--si-fg);
+  font-family: var(--si-body-font);
+  -webkit-font-smoothing: antialiased;
+}
+
+.frame {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 112px 120px 104px;
+  overflow: hidden;
+}
+
+.grow { flex: 1; min-height: 0; }
+
+.top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 48px;
+}
+
+.eyebrow {
+  color: var(--si-accent);
+  font-size: 30px;
+  font-weight: 750;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.brand {
+  max-width: 520px;
+  font-family: var(--si-display-font);
+  font-size: 38px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  text-align: right;
+}
+
+.brand img {
+  display: block;
+  max-width: 100%;
+  max-height: 110px;
+  object-fit: contain;
+}
+
+h1 {
+  max-width: 1780px;
+  margin-top: 72px;
+  font-family: var(--si-display-font);
+  font-size: 146px;
+  font-weight: 820;
+  letter-spacing: -0.045em;
+  line-height: 1.02;
+}
+
+.subhead {
+  max-width: 1500px;
+  margin-top: 36px;
+  color: var(--si-muted);
+  font-size: 48px;
+  font-weight: 560;
+  line-height: 1.42;
+}
+
+.proof {
+  margin-top: 68px;
+  padding: 56px;
+  overflow: hidden;
+  border: 2px solid var(--si-border);
+  border-radius: 38px;
+  background: var(--si-surface);
+}
+
+.proof img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.proof-title {
+  font-family: var(--si-display-font);
+  font-size: 54px;
+  font-weight: 780;
+  line-height: 1.15;
+}
+
+.proof-copy {
+  margin-top: 20px;
+  color: var(--si-muted);
+  font-size: 36px;
+  line-height: 1.5;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 36px;
+  margin-top: 60px;
+}
+
+.card {
+  min-height: 360px;
+  padding: 46px;
+  border: 2px solid var(--si-border);
+  border-radius: 32px;
+  background: var(--si-surface);
+}
+
+.source-label {
+  margin-top: 24px;
+  color: var(--si-muted);
+  font-size: 23px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.footer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 48px;
+  margin-top: 48px;
+  padding-top: 34px;
+  border-top: 2px solid var(--si-border);
+}
+
+.footer strong {
+  max-width: 1250px;
+  font-family: var(--si-display-font);
+  font-size: 42px;
+  line-height: 1.25;
+}
+
+.badge {
+  flex: none;
+  padding: 14px 20px;
+  border-radius: 999px;
+  background: var(--si-accent);
+  color: var(--si-bg);
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+html[data-canvas="landscape"] .frame { padding: 54px 62px 48px; }
+html[data-canvas="landscape"] .eyebrow { font-size: 17px; }
+html[data-canvas="landscape"] .brand { font-size: 24px; max-width: 300px; }
+html[data-canvas="landscape"] .brand img { max-height: 54px; }
+html[data-canvas="landscape"] h1 { margin-top: 28px; font-size: 76px; max-width: 1040px; }
+html[data-canvas="landscape"] .subhead { margin-top: 16px; font-size: 27px; max-width: 900px; }
+html[data-canvas="landscape"] .footer { margin-top: 24px; padding-top: 18px; }
+html[data-canvas="landscape"] .footer strong { font-size: 24px; max-width: 760px; }
+html[data-canvas="landscape"] .badge { padding: 9px 13px; font-size: 14px; }
+html[data-canvas="landscape"] .landscape-drop { display: none !important; }
+
+html[data-canvas="portrait"] .frame { padding: 70px 66px 62px; }
+html[data-canvas="portrait"] .eyebrow { font-size: 18px; }
+html[data-canvas="portrait"] .brand { font-size: 25px; max-width: 300px; }
+html[data-canvas="portrait"] .brand img { max-height: 62px; }
+html[data-canvas="portrait"] h1 { margin-top: 34px; font-size: 78px; max-width: 940px; }
+html[data-canvas="portrait"] .subhead { margin-top: 20px; font-size: 29px; max-width: 870px; }
+html[data-canvas="portrait"] .proof { margin-top: 38px; padding: 34px; border-radius: 24px; }
+html[data-canvas="portrait"] .proof-title { font-size: 36px; }
+html[data-canvas="portrait"] .proof-copy { margin-top: 12px; font-size: 25px; }
+html[data-canvas="portrait"] .source-label { margin-top: 15px; font-size: 16px; }
+html[data-canvas="portrait"] .footer { margin-top: 30px; padding-top: 22px; }
+html[data-canvas="portrait"] .footer strong { font-size: 29px; max-width: 700px; }
+html[data-canvas="portrait"] .badge { padding: 10px 14px; font-size: 16px; }
+html[data-canvas="portrait"] .portrait-drop { display: none !important; }

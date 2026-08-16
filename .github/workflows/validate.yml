@@ -1,0 +1,53 @@
+name: Validate skills
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  social-image:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: skills/social-image
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: skills/social-image/package-lock.json
+
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run check
+      - run: npm run smoke
+
+  setup-heygeist:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: skills/setup-heygeist
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: skills/setup-heygeist/package-lock.json
+
+      - run: npm ci
+      - run: npm ci
+        working-directory: skills/social-image
+      - run: npx playwright install --with-deps chromium
+        working-directory: skills/social-image
+      - run: npm run check
+      - run: npm run smoke

@@ -1,195 +1,162 @@
 ---
 name: social-image
-description: Analyze supplied content and produce the GEIST-branded social image for it — composed for that content, rendered at 2048 plus link-card and portrait canvases, gated, and handed off with the editable HTML. Use when the user supplies full source content (a blog post, changelog, thread, feature, or brief) together with the social post copy and needs the post image made; also for a comparison graphic, an authentic agent-output proof crop, or a revision of an existing post image.
+description: Create, revise, render, and QA brand-aware social images from supplied source content and social copy. Use when Codex needs to produce square, landscape link-card, and portrait social graphics; compare multiple compositions; incorporate authentic screenshots; adapt to a supplied brand kit; or deliver editable HTML and validated PNG exports.
 ---
 
-# GEIST Social Image
+# Social Image
 
-The user gives you two things: the **full content** (the article, changelog, feature, or
-thread the post is about) and the **social post copy** they already wrote. Your job is to
-read both and produce the image.
+Turn full source content and its social post copy into a publish-ready image set. Compose for the content instead of filling a fixed template.
 
-## Where this runs
+## Required inputs
 
-**This skill operates inside the `geist-facebook-page-assets` workspace**, and every path
-below is relative to its root:
+Obtain both:
+
+1. The full source content: article, changelog, thread, feature, launch brief, or equivalent.
+2. The social post copy the image will accompany.
+
+Accept pasted text, URLs, or readable local files. Also use any installed brand pack, supplied brand guide, logo, fonts, screenshots, output location, platform requirements, and image-generation policy.
+
+If no brand pack or brand context is supplied or discoverable, use the neutral starter grammar in `assets/base.css`. Never invent a logo or imply a brand affiliation.
+
+## Runtime
+
+Operate from any writable workspace. Resolve bundled files relative to this skill directory; do not assume a repository name, home-directory layout, or agent-specific installation path.
+
+On first use, install the local renderer dependency from the skill directory:
 
 ```sh
-cd ~/Desktop/work/geist/geist-facebook-page-assets
+npm install
+npx playwright install chromium
 ```
 
-If the session started somewhere else — `pet-hub` is the usual case, since the source
-content often lives there — change directory first. The brand assets, fonts, stylesheet,
-renderer, and post folders all resolve from this root and from nowhere else. Read the
-source content from wherever the user has it; write the post project here.
-
-First run in a fresh clone needs `bun install` (playwright is the only dependency).
-
-## The rule that outranks the rest
-
-**Compose the image for the content. There is no house layout.**
-
-There is no fill-in-the-blank template, and adding one is a regression. What is shared is
-the *grammar* — tokens, zones, type scale, proof mechanics in
-`templates/geist-social-image/base.css` — never an arrangement. Two posts about different
-things should not resolve to the same picture.
-
-`templates/geist-social-image/reference-example.html` is one solved composition to read.
-`references/layout-grammar.md` catalogues arrangements that have worked. Both are there to
-raise the floor, never to be instantiated.
-
-## Folder contract
-
-One self-contained project per post. Never scatter a post across root-level folders, and
-never reuse another post's folder.
+Write output to the user's requested location. Otherwise default to:
 
 ```text
-projects/posts/<post-slug>/
-├── assets/                    # AUTHENTIC captures only — real screenshots
-├── generated/                 # synthetic imagery + its .json sidecar (see below)
+social-images/<post-slug>/
+├── assets/
+│   ├── base.css               # copied from this skill, then brand-adjusted
+│   ├── brand/                 # user-supplied logos and licensed fonts
+│   └── captures/              # authentic, untouched screenshots
+├── generated/                 # synthetic images and JSON provenance sidecars
 ├── exports/
-│   ├── <post-slug>-2048.png
-│   ├── <post-slug>-1200x630.png
-│   └── <post-slug>-1080x1350.png
-├── working/                   # candidates, rejects, previews; git-ignored
+│   ├── <post-slug>-square.png
+│   ├── <post-slug>-landscape.png
+│   └── <post-slug>-portrait.png
+├── working/                   # candidate HTML, previews, and contact sheet
 ├── <post-slug>.html
-├── caption.md                 # the user's copy, as supplied
-└── PROCESS.md                 # only when requested
+└── caption.md
 ```
 
-`assets/` vs `generated/` is not filing — it is the honesty gate. Anything in `generated/`
-can never sit under a `REAL` label, and the folder is what makes that checkable.
+Keep each post self-contained. Final HTML must continue to render after the skill is moved or removed.
 
 ## Load context
 
-1. `CONTEXT.md` — canonical GEIST terminology.
-2. `assets/brand/brandbook/index.html` — before any visual decision.
-3. [references/layout-grammar.md](references/layout-grammar.md) — zones, type scale, canvases, composition catalogue.
-4. [references/visual-contract.md](references/visual-contract.md) — assets, crop, provenance, export rules.
-5. [references/caption-contract.md](references/caption-contract.md) — when checking the supplied caption.
-6. [references/image-generation.md](references/image-generation.md) — only when HTML genuinely cannot render what is needed.
-7. Existing exports under `projects/posts/*/exports/`. Do not assume the newest file is canonical.
+1. Read [references/brand-packs.md](references/brand-packs.md) and resolve an active workspace brand pack.
+2. Read [references/brand-input.md](references/brand-input.md) when brand material is supplied or branding is requested.
+3. Read [references/layout-grammar.md](references/layout-grammar.md) before composing candidates.
+4. Read [references/visual-contract.md](references/visual-contract.md) before using screenshots, mockups, or generated media.
+5. Read [references/caption-contract.md](references/caption-contract.md) when checking the supplied social copy.
+6. Read [references/image-generation.md](references/image-generation.md) only when generated imagery is needed.
+7. Inspect relevant existing outputs and source files. Do not assume the newest-looking artifact is canonical.
 
 ## Build the image
 
-### 1. Read both inputs and find the one thing
+### 1. Find the one thing
 
-Read the full content *and* the social post copy. Resolve: who this is for, the single
-takeaway, the tone, what must not be claimed, and what the reader should do next. Verify
-every factual claim against the source, the codebase, or the named skill — find facts
-yourself rather than asking. Ask only when a missing decision would change the result.
+Read the full content and social copy. Resolve the audience, single takeaway, desired reaction, tone, prohibited claims, and CTA. Verify factual claims against supplied or discoverable sources.
 
-The image and the caption must not say the same sentence twice. The caption carries detail;
-the image carries the hook.
+Let the caption carry detail and the image carry the hook. Do not repeat the same sentence in both.
 
-### 2. Propose three headlines, then wait
+### 2. Establish the brand layer
 
-Write **three** candidate headlines and show them to the user before composing anything.
-A GEIST headline is a **reaction, not a title** — what the reader feels, not what the
-product does. Two lines, spoken Thai, playful and a little teasing, never corporate.
-The subhead explains; the headline reacts.
-
-Do not proceed on your own pick.
-
-### 3. Compose three variants for this content
-
-Once the headline is chosen, build **three structurally different** compositions — not
-three colourways of one layout. Let the content choose the structures: a before/after wants
-a split, a single artifact wants the artifact to lead, a choice between two things wants two
-equal cards, a striking quote wants type alone.
-
-Each variant is its own HTML in `working/`. Render the master canvas only while iterating
-(`--canvas 2048`) — it is ~3× faster.
-
-### 4. Prepare the proof
-
-- Prefer a real capture of the product or agent. Crop it in CSS with `overflow:hidden`;
-  never recreate product UI in HTML.
-- **Capture floor: ≥1600px wide** for anything filling the panel at 2048. Below that it
-  visibly softens. Capture at retina, or zoom the source UI before capturing.
-- Store the untouched original in `assets/`.
-- A hand-built mock is allowed, but then the provenance label may not say `REAL` — see
-  the three-value rule in [references/visual-contract.md](references/visual-contract.md).
-
-### 5. Show the candidates and let the user pick
-
-Render the three at 2048, build the contact sheet, and show **both** the sheet and the
-three full-size images in your response:
+Resolve the active workspace pack first:
 
 ```sh
-node .agents/skills/geist-social-image/scripts/contact-sheet.mjs \
-  projects/posts/<slug>/working/*-2048.png \
-  --out projects/posts/<slug>/working/contact-sheet.png
+node <skill-dir>/scripts/resolve-brand.mjs <workspace>
 ```
 
-The sheet is how consistency between candidates reads at a glance; the full-size is how you
-see whether the Thai headline breathes. Do not call any variant final before the user says so.
+When a pack is active, read every required file named in its manifest. Treat the pack as brand context, not as a layout template.
 
-### 6. Refine the winner, then export the canvas set
+Then use brand sources in this order: explicit instructions for the current post, active brand pack, canonical design tokens, approved logo files, licensed fonts, then representative existing work.
 
-Promote the chosen variant to `projects/posts/<slug>/<slug>.html` and render everything:
+Copy `assets/base.css` into the post's `assets/` directory. Adjust only its `SOCIAL-IMAGE-TOKENS` block and font declarations to match verified brand material. Preserve the structural canvas rules.
+
+When no brand source exists, retain the neutral starter tokens and use a plain text brand label only if the user supplies the name. For HeyGeist work, tell a new user to run `$setup-heygeist` once before continuing.
+
+### 3. Propose three headlines, then wait
+
+Write three candidate headlines in the content's language. Make each a reaction or hook rather than a document title. Keep it short enough for an intentional one- or two-line break.
+
+Wait for the user to choose. Do not silently select one.
+
+### 4. Compose three structural variants
+
+Build three genuinely different compositions, not color variants of one arrangement. Let the content select the structure: comparison, artifact-led, quote-led, sequence, before/after, data-led, or another justified form.
+
+Create each candidate as editable HTML under `working/`. Link the copied `assets/base.css` and keep arrangement-specific CSS inside the candidate.
+
+Render only the square canvas while iterating:
 
 ```sh
-node .agents/skills/geist-social-image/scripts/shot.mjs \
-  projects/posts/<slug>/<slug>.html --preview
+node <skill-dir>/scripts/shot.mjs \
+  <candidate.html> --out <working-dir> --canvas square
 ```
 
-The three canvases are **compositions, not a reflow**. A 1200×630 link card cannot hold a
-two-line 148px headline plus a proof panel — it drops to headline-led. Mark what each
-smaller canvas sheds with `.og-drop` / `.portrait-drop`. Per-canvas zone tables are in
-[references/layout-grammar.md](references/layout-grammar.md).
+### 5. Use honest proof
 
-### 7. Pass every gate
+Prefer authentic captures when showing a product, interface, result, or agent output. Store untouched originals in `assets/captures/` and crop through CSS. Never reconstruct an interface and label it as real.
 
-`shot.mjs` runs five and exits non-zero on a hard failure:
+Use `data-provenance="real"`, `data-provenance="example"`, or `data-provenance="generated"` on proof elements. Generated media belongs in `generated/` with its sidecar.
 
-| Gate | Fails when |
-|---|---|
-| errors | any console or page error |
-| overflow | `scrollWidth/Height` exceeds the canvas — content is being cut |
-| dimensions | an export is not exactly its canvas size |
-| tokens | `base.css`'s `GEIST-TOKENS` block drifted from its checksum |
-| line width | a headline line is ≥92% of content width — at wrap risk |
+### 6. Present candidates
 
-The sixth is not a probe: **look at the rendered PNG**, at full size and at 360px. Confirm
-one dominant hook, equal structural margins, the mascot clear of copy, the crop sharp and
-authentic, nothing clipped. If subagents are available, hand a fresh reviewer the raw 2048
-export and ask only about hierarchy, alignment, spacing, balance, crop, and 360px
-readability — do not leak the fix you have in mind.
+Render the three square candidates and create a contact sheet:
 
-Separate release blockers from optional polish.
+```sh
+node <skill-dir>/scripts/contact-sheet.mjs \
+  <working-dir>/*-square.png --out <working-dir>/contact-sheet.png
+```
 
-### 8. Check the caption — do not rewrite it
+Show the contact sheet and full-size candidates. Wait for the user to choose a composition.
 
-The user supplies the caption. Save it verbatim as `caption.md`, then check it against
-[references/caption-contract.md](references/caption-contract.md) and report what you find:
-unsupported performance or time-saving claims, better/worse framing the facts do not carry,
-a term used before it is explained, Markdown that will render literally on Facebook, an
-image hook the caption contradicts.
+### 7. Refine and export
 
-Report; do not silently edit. Offer a rewrite only if asked.
+Promote the chosen HTML to `<post-slug>.html`. Compose each canvas intentionally; use `.landscape-drop` and `.portrait-drop` for detail that should not survive smaller formats.
 
-### 9. When HTML genuinely cannot draw it
+Render the complete set:
 
-If the image needs something HTML and CSS cannot produce — a photographic scene, a realistic
-object, an illustration no layout can stand in for — or if **three rounds of fixes have not
-converged**, switch to generation. Read
-[references/image-generation.md](references/image-generation.md) first. Output lands in
-`generated/` with its sidecar and can never carry a `REAL` label.
+```sh
+node <skill-dir>/scripts/shot.mjs <post.html> --preview
+```
+
+The renderer produces:
+
+- `square`: 2048 × 2048
+- `landscape`: 1200 × 630
+- `portrait`: 1080 × 1350
+
+### 8. Pass the gates
+
+Fix every hard failure reported by `shot.mjs`: browser errors, broken images, missing design tokens, overflow, wrong dimensions, or headline wrap risk.
+
+Then inspect the square export at full size and the 360 px preview. Confirm one dominant hook, deliberate alignment, readable text, honest provenance, sharp media, and no accidental clipping.
+
+### 9. Check the caption without silently rewriting it
+
+Save the supplied social copy as `caption.md`. Report unsupported claims, contradictions, unexplained terms, or platform-hostile formatting. Rewrite only when requested.
+
+### 10. Generate imagery only when justified
+
+Use generated imagery only when layout, typography, diagrams, authentic captures, and supplied assets cannot communicate the idea. Follow the user's generation policy and [references/image-generation.md](references/image-generation.md).
 
 ## Deliverables
 
-- `<post-slug>-2048.png`, `<post-slug>-1200x630.png`, `<post-slug>-1080x1350.png`
-- `<post-slug>.html`
-- `caption.md` plus your contract findings
+Hand off:
 
-Link each artifact and show the 2048 image in your response. Nothing is final until it has
-passed the gates, been read at 360px, and been approved by the user.
+- `<post-slug>-square.png`
+- `<post-slug>-landscape.png`
+- `<post-slug>-portrait.png`
+- `<post-slug>.html` with local assets
+- `caption.md` plus caption-check findings
 
-## Two traps in this repo
-
-- **`.gitignore` ignores `.agents/`.** Every file you add under it needs `git add -f` or it
-  will look committed locally and never reach anyone else.
-- **Never hand-edit a hex in `base.css`.** The palette is vendored from pet-hub's
-  `bun run brand:tokens`; the token gate fails the render if it drifts. That drift is
-  exactly how the earlier social kit ended up with a wrong ink and grey.
+Show the square image in the response and link every artifact. Do not call a candidate final before user approval and visual QA.

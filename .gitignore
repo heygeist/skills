@@ -1,0 +1,4 @@
+.DS_Store
+skills/*/node_modules/
+skills/*/tests/output/
+npm-debug.log*
