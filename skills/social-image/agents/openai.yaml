@@ -1,4 +1,4 @@
 interface:
   display_name: "Social Image"
-  short_description: "Create social graphics from workspace DESIGN.md"
+  short_description: "Create social graphics from approved workspace context"
   default_prompt: "Use $social-image to turn my source content and social copy into a validated, editable social image set."

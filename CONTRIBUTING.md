@@ -11,7 +11,7 @@ npx playwright install chromium
 npm run check
 npm run smoke
 
-cd ../setup-heygeist
+cd ../setup-social-image
 npm install
 npm run check
 npm run smoke
@@ -26,9 +26,10 @@ npm run smoke
 - Treat `assets/example.html` as a worked example, not a fixed layout template.
 - Add or update a smoke fixture when changing the renderer contract.
 - Preserve honest `real`, `example`, and `generated` provenance semantics.
-- Keep brand-specific visual rules in workspace `DESIGN.md`, never in the generic core or context pack.
-- Keep only non-visual product language, caption guidance, and approved-asset pointers in `.social-image/brands/<brand-id>/`.
-- Follow the versioned schema-2 `brand.json` contract when adding a setup skill.
+- Keep brand-specific visual rules in workspace `DESIGN.md`, never in the generic core.
+- Keep reusable product context in `.social-image/context.md` and caption guidance in `.social-image/caption.md`.
+- Track local and external assets in the schema-1 `.social-image/asset-manifest.json` with provenance, license, restrictions, status, and checksums where applicable.
+- Preserve legacy and unreferenced assets during migration; removal requires a separate explicit action.
 
 ## Pull requests
 

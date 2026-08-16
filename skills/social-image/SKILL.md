@@ -14,7 +14,7 @@ Obtain both:
 1. The full source content: article, changelog, thread, feature, launch brief, or equivalent.
 2. The social post copy the image will accompany.
 
-Accept pasted text, URLs, or readable local files. Also use any discoverable `DESIGN.md`, active workspace context pack, supplied brand guide, logo, fonts, screenshots, output location, platform requirements, and image-generation policy.
+Accept pasted text, URLs, or readable local files. Also use any discoverable workspace social context, supplied brand guide, logo, fonts, screenshots, output location, platform requirements, and image-generation policy.
 
 If no `DESIGN.md` or brand context is supplied or discoverable, use the neutral starter grammar in `assets/base.css`. Never invent a logo or imply a brand affiliation.
 
@@ -51,7 +51,7 @@ Keep each post self-contained. Final HTML must continue to render after the skil
 
 ## Load context
 
-1. Read [references/brand-packs.md](references/brand-packs.md) and resolve the workspace `DESIGN.md` plus any active non-visual brand context.
+1. Read [references/workspace-context.md](references/workspace-context.md) and resolve the workspace `DESIGN.md`, reusable context, caption guidance, provenance, and asset library.
 2. Read [references/brand-input.md](references/brand-input.md) when brand material is supplied or branding is requested.
 3. Read [references/layout-grammar.md](references/layout-grammar.md) before composing candidates.
 4. Read [references/visual-contract.md](references/visual-contract.md) before using screenshots, mockups, or generated media.
@@ -69,19 +69,19 @@ Let the caption carry detail and the image carry the hook. Do not repeat the sam
 
 ### 2. Establish the brand layer
 
-Resolve the nearest workspace design system and context pack first:
+Resolve the nearest workspace context first:
 
 ```sh
-node <skill-dir>/scripts/resolve-brand.mjs <workspace>
+node <skill-dir>/scripts/resolve-context.mjs <workspace>
 ```
 
-Read `files.design_system` whenever it resolves. Treat it as the canonical visual system. When a context pack is active, also read its product context and caption contract; use its manifest only to locate approved optional assets.
+Read every resolved file relevant to the post. Treat `files.design_system` as the canonical visual system, `files.context` as reusable product context, `files.caption_contract` as reusable copy guidance, and `files.sources` plus resolved asset metadata as provenance and usage constraints.
 
-Then use brand sources in this order: explicit instructions for the current post, workspace `DESIGN.md`, approved logo files, licensed fonts, active non-visual brand context, then representative existing work.
+Then use sources in this order: explicit instructions for the current post, workspace `DESIGN.md`, canonical workspace assets, reusable product and caption context, then reference-only material.
 
 Copy `assets/base.css` into the post's `assets/` directory. Derive its `SOCIAL-IMAGE-TOKENS` block and font declarations from verified `DESIGN.md` roles. Preserve the structural canvas rules; the copied CSS is a self-contained runtime derivative, not a second design-system source.
 
-When no brand source exists, retain the neutral starter tokens and use a plain text brand label only if the user supplies the name. For HeyGeist work, tell a new user to run `$setup-heygeist` once before continuing.
+When no reusable context exists, retain the neutral starter tokens and use a plain text brand label only if the user supplies the name. Offer `$setup-social-image` when the user wants reusable context installed before continuing.
 
 ### 3. Propose three headlines, then wait
 

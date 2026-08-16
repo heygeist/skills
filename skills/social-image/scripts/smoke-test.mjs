@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { spawnSync } from 'node:child_process';
+import crypto from 'node:crypto';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -10,7 +11,7 @@ const skillDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'
 const temporaryDir = fs.mkdtempSync(path.join(os.tmpdir(), 'social-image-smoke-'));
 const renderer = path.join(skillDir, 'scripts', 'shot.mjs');
 const contactSheet = path.join(skillDir, 'scripts', 'contact-sheet.mjs');
-const resolver = path.join(skillDir, 'scripts', 'resolve-brand.mjs');
+const resolver = path.join(skillDir, 'scripts', 'resolve-context.mjs');
 const example = path.join(skillDir, 'assets', 'example.html');
 
 function run(args) {
@@ -37,11 +38,39 @@ try {
   });
   if (resolved.status !== 0) throw new Error(resolved.stderr || 'DESIGN.md resolver failed');
   const designContext = JSON.parse(resolved.stdout);
-  if (!designContext.found || designContext.brand !== null) {
+  if (!designContext.found || !designContext.design_ready || designContext.context_ready) {
     throw new Error('standalone DESIGN.md did not resolve without a context pack');
   }
   if (designContext.files.design_system !== path.join(designOnlyWorkspace, 'DESIGN.md')) {
     throw new Error('standalone DESIGN.md resolved to the wrong path');
+  }
+
+  const configRoot = path.join(designOnlyWorkspace, '.social-image');
+  const logoDir = path.join(configRoot, 'assets', 'logos');
+  const logo = path.join(logoDir, 'logo.svg');
+  fs.mkdirSync(logoDir, { recursive: true });
+  fs.writeFileSync(path.join(configRoot, 'context.md'), '# Product Context\n\nSmoke context.\n', 'utf8');
+  fs.writeFileSync(path.join(configRoot, 'caption.md'), '# Caption Guidance\n\nSmoke voice.\n', 'utf8');
+  fs.writeFileSync(path.join(configRoot, 'sources.md'), '# Sources\n\nSmoke source.\n', 'utf8');
+  fs.writeFileSync(logo, '<svg xmlns="http://www.w3.org/2000/svg"><path d="M0 0h10v10H0z"/></svg>\n');
+  const logoHash = crypto.createHash('sha256').update(fs.readFileSync(logo)).digest('hex');
+  fs.writeFileSync(path.join(configRoot, 'asset-manifest.json'), `${JSON.stringify({
+    schema_version: 1,
+    assets: [{
+      id: 'primary-logo', category: 'logos', type: 'logo', role: 'Primary mark',
+      status: 'canonical', source: 'smoke fixture', ownership: 'Example', license: 'Test only',
+      restrictions: 'None', path: 'assets/logos/logo.svg', sha256: logoHash,
+    }],
+    references: [],
+  }, null, 2)}\n`, 'utf8');
+  const completeResolution = spawnSync(process.execPath, [resolver, nestedWorkspace], {
+    cwd: skillDir,
+    encoding: 'utf8',
+  });
+  if (completeResolution.status !== 0) throw new Error(completeResolution.stderr || 'context resolver failed');
+  const completeContext = JSON.parse(completeResolution.stdout);
+  if (!completeContext.complete || !completeContext.context_ready || completeContext.assets.length !== 1) {
+    throw new Error('complete workspace context did not resolve');
   }
 
   run([renderer, example, '--out', temporaryDir, '--basename', 'smoke', '--preview']);

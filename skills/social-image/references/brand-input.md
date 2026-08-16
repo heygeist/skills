@@ -38,7 +38,7 @@ Do not block when these are absent. Use the neutral starter tokens, system fonts
 
 Treat `DESIGN.md` as the single source of truth for reusable visual decisions. Read both its machine-readable frontmatter and its prose rationale. Exact tokens control values; prose controls semantic usage and exceptions.
 
-Keep product terminology and caption voice in the active context pack. Keep per-post source content and social copy with the post. Do not duplicate those into `DESIGN.md`.
+Keep product terminology in `.social-image/context.md` and caption voice in `.social-image/caption.md`. Keep per-post source content and social copy with the post. Do not duplicate those into `DESIGN.md`.
 
 ## Runtime token mapping
 
