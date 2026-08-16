@@ -30,14 +30,20 @@ if (path.parse(target).root === target) {
 
 const setupDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const sourcePack = path.join(setupDir, 'assets', 'context-pack');
+const sourceDesign = path.join(setupDir, 'assets', 'DESIGN.md');
 const configRoot = path.join(target, '.social-image');
 const brandsRoot = path.join(configRoot, 'brands');
 const destination = path.join(brandsRoot, 'heygeist');
 const activePath = path.join(configRoot, 'active-brand.json');
+const designPath = path.join(target, 'DESIGN.md');
 const force = has('force');
 
 if (fs.existsSync(destination) && !force) {
   fail(`HeyGeist context already exists at ${destination}; inspect it and rerun with --force to update`);
+}
+
+if (fs.existsSync(designPath) && !force) {
+  fail(`DESIGN.md already exists at ${designPath}; inspect it and rerun with --force to replace it`);
 }
 
 if (fs.existsSync(activePath) && !force) {
@@ -64,13 +70,32 @@ for (const [key, input] of Object.entries(optionalInputs)) {
   }
 }
 
+const preservedOptionalAssets = {};
+const existingManifestPath = path.join(destination, 'brand.json');
+if (force && fs.existsSync(existingManifestPath)) {
+  try {
+    const existingManifest = JSON.parse(fs.readFileSync(existingManifestPath, 'utf8'));
+    for (const [key, relativePath] of Object.entries(existingManifest.optional_assets ?? {})) {
+      const resolved = path.resolve(destination, relativePath);
+      if (resolved.startsWith(`${destination}${path.sep}`) && fs.existsSync(resolved)) {
+        preservedOptionalAssets[key] = relativePath;
+      }
+    }
+  } catch {
+    // A forced update may repair an unreadable legacy manifest.
+  }
+}
+
 fs.mkdirSync(brandsRoot, { recursive: true });
 fs.cpSync(sourcePack, destination, { recursive: true, force: true });
 fs.mkdirSync(path.join(destination, 'assets'), { recursive: true });
+for (const legacyFile of ['visual.md', 'theme.css']) {
+  fs.rmSync(path.join(destination, legacyFile), { force: true });
+}
 
 const manifestPath = path.join(destination, 'brand.json');
 const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-manifest.optional_assets = {};
+manifest.optional_assets = preservedOptionalAssets;
 
 for (const [key, input] of Object.entries(optionalInputs)) {
   if (!input) continue;
@@ -84,8 +109,10 @@ for (const [key, input] of Object.entries(optionalInputs)) {
 
 fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, 'utf8');
 fs.writeFileSync(activePath, `${JSON.stringify({ schema_version: 1, brand: 'heygeist' }, null, 2)}\n`, 'utf8');
+fs.copyFileSync(sourceDesign, designPath);
 
 console.log(`installed HeyGeist context: ${destination}`);
+console.log(`installed design system: ${designPath}`);
 console.log(`active brand: heygeist`);
 for (const [key, value] of Object.entries(manifest.optional_assets)) {
   console.log(`installed ${key}: ${value}`);

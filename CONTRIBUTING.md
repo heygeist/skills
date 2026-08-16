@@ -26,8 +26,9 @@ npm run smoke
 - Treat `assets/example.html` as a worked example, not a fixed layout template.
 - Add or update a smoke fixture when changing the renderer contract.
 - Preserve honest `real`, `example`, and `generated` provenance semantics.
-- Keep brand-specific rules in setup skills or brand packs, never in the generic core.
-- Follow the versioned `.social-image/brands/<brand-id>/brand.json` contract when adding a setup skill.
+- Keep brand-specific visual rules in workspace `DESIGN.md`, never in the generic core or context pack.
+- Keep only non-visual product language, caption guidance, and approved-asset pointers in `.social-image/brands/<brand-id>/`.
+- Follow the versioned schema-2 `brand.json` contract when adding a setup skill.
 
 ## Pull requests
 

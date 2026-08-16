@@ -1,12 +1,6 @@
-# HeyGeist Context
+# HeyGeist Product Context
 
-Use this vocabulary and product framing in HeyGeist social work. Verify feature-specific claims against the supplied source or current product code.
-
-## Identity
-
-- **Canonical visual lockup:** `GEIST.` Use only an approved wordmark file when supplied; never redraw it as live text and imply it is canonical.
-- **Primary mascot:** Crownheart Geist. Use it by default when one HeyGeist mascot is needed and an approved asset is installed. Other Pets are supporting characters unless the brief assigns them a role.
-- **Voice:** warm, practical, lightly playful, truth-first, and never boastful.
+Use this vocabulary and product framing in HeyGeist social work. Read workspace `DESIGN.md` for every visual-identity decision and `caption.md` for copy voice. Verify feature-specific claims against the supplied source or current product code.
 
 ## Product language
 

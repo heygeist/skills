@@ -5,10 +5,11 @@
 Use brand evidence in this order:
 
 1. Explicit user instructions for this project
-2. A canonical brand guide or design-token source
-3. Approved logo, icon, and font files
-4. Current product or marketing surfaces
-5. Representative published work
+2. The nearest workspace `DESIGN.md`
+3. A canonical supplied brand guide or design-token source
+4. Approved logo, icon, and font files
+5. Current product or marketing surfaces
+6. Representative published work
 
 Treat examples as evidence, not templates. When sources conflict, prefer the most canonical and recent source and report the conflict.
 
@@ -33,7 +34,13 @@ Do not block when these are absent. Use the neutral starter tokens, system fonts
 - Do not bundle third-party fonts without their license files.
 - Record any non-obvious source or usage restriction in a short HTML comment or project note.
 
-## Token contract
+## DESIGN.md contract
+
+Treat `DESIGN.md` as the single source of truth for reusable visual decisions. Read both its machine-readable frontmatter and its prose rationale. Exact tokens control values; prose controls semantic usage and exceptions.
+
+Keep product terminology and caption voice in the active context pack. Keep per-post source content and social copy with the post. Do not duplicate those into `DESIGN.md`.
+
+## Runtime token mapping
 
 Copy `assets/base.css` into the project and edit the values between:
 
@@ -44,13 +51,15 @@ Copy `assets/base.css` into the project and edit the values between:
 
 Keep these variables defined:
 
-- `--si-bg`
-- `--si-fg`
-- `--si-accent`
-- `--si-muted`
-- `--si-surface`
-- `--si-border`
-- `--si-display-font`
-- `--si-body-font`
+- `--si-bg`: primary canvas/background role
+- `--si-fg`: primary text/foreground role
+- `--si-accent`: active signal or CTA role
+- `--si-muted`: secondary text role
+- `--si-surface`: card or proof-surface role
+- `--si-border`: divider or hairline role
+- `--si-display-font`: approved display/headline family and fallbacks
+- `--si-body-font`: approved body family and fallbacks
+
+Resolve roles from token meaning and prose, not token names alone. Use the neutral value for a missing role and report the fallback. Do not edit `DESIGN.md` merely to mirror `--si-*` names.
 
 Confirm readable contrast and font availability in the rendered PNG, not only in source code.

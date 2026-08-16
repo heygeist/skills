@@ -33,6 +33,9 @@ try {
   if (resolve.status !== 0) throw new Error(resolve.stderr || 'resolver failed');
   const result = JSON.parse(resolve.stdout);
   if (!result.found || result.brand !== 'heygeist') throw new Error('HeyGeist pack did not resolve');
+  if (result.files.design_system !== path.join(temporaryWorkspace, 'DESIGN.md')) {
+    throw new Error('workspace DESIGN.md did not resolve');
+  }
   if (!result.optional_assets.logo) throw new Error('approved optional logo did not resolve');
 
   const duplicate = run(process.execPath, [installer, '--target', temporaryWorkspace]);
@@ -41,13 +44,39 @@ try {
   const update = run(process.execPath, [installer, '--target', temporaryWorkspace, '--force']);
   if (update.status !== 0) throw new Error(update.stderr || 'forced update failed');
 
+  const resolveAfterUpdate = run(process.execPath, [resolver, nestedWorkspace]);
+  if (resolveAfterUpdate.status !== 0) throw new Error(resolveAfterUpdate.stderr || 'updated pack did not resolve');
+  const updatedResult = JSON.parse(resolveAfterUpdate.stdout);
+  if (!updatedResult.optional_assets.logo) throw new Error('forced update did not preserve approved assets');
+  for (const legacyFile of ['visual.md', 'theme.css']) {
+    if (fs.existsSync(path.join(updatedResult.brand_dir, legacyFile))) {
+      throw new Error(`forced update retained legacy visual file: ${legacyFile}`);
+    }
+  }
+
   const project = path.join(temporaryWorkspace, 'integration-post');
   const exportsDir = path.join(project, 'exports');
   fs.mkdirSync(project, { recursive: true });
   const baseCss = fs.readFileSync(path.join(socialImageDir, 'assets', 'base.css'), 'utf8');
-  const themeCss = fs.readFileSync(result.files.theme, 'utf8');
-  const tokenBlock = themeCss.match(/\/\* SOCIAL-IMAGE-TOKENS:START \*\/[\s\S]*?\/\* SOCIAL-IMAGE-TOKENS:END \*\//)?.[0];
-  if (!tokenBlock) throw new Error('HeyGeist theme does not contain a token block');
+  const design = fs.readFileSync(updatedResult.files.design_system, 'utf8');
+  const color = (name) => design.match(new RegExp(`^  ${name}: "([^"]+)"$`, 'm'))?.[1];
+  const font = (name) => design.match(new RegExp(`^  ${name}:\\n    fontFamily: (.+)$`, 'm'))?.[1];
+  const requiredTokens = ['canvas', 'primary', 'mango', 'muted', 'surface', 'hairline'];
+  if (requiredTokens.some((name) => !color(name)) || !font('thai') || !font('latin')) {
+    throw new Error('HeyGeist DESIGN.md is missing required social-image tokens');
+  }
+  const tokenBlock = `/* SOCIAL-IMAGE-TOKENS:START */
+:root {
+  --si-bg: ${color('canvas')};
+  --si-fg: ${color('primary')};
+  --si-accent: ${color('mango')};
+  --si-muted: ${color('muted')};
+  --si-surface: ${color('surface')};
+  --si-border: ${color('hairline')};
+  --si-display-font: "${font('thai')}", "${font('latin')}", ui-sans-serif, sans-serif;
+  --si-body-font: "${font('latin')}", "${font('thai')}", ui-sans-serif, sans-serif;
+}
+/* SOCIAL-IMAGE-TOKENS:END */`;
   const themedCss = baseCss.replace(
     /\/\* SOCIAL-IMAGE-TOKENS:START \*\/[\s\S]*?\/\* SOCIAL-IMAGE-TOKENS:END \*\//,
     tokenBlock,

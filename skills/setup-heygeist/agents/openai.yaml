@@ -1,4 +1,4 @@
 interface:
   display_name: "Setup HeyGeist"
-  short_description: "Install HeyGeist context for the social-image skill"
+  short_description: "Install HeyGeist DESIGN.md and social context"
   default_prompt: "Use $setup-heygeist to configure this workspace for HeyGeist posts made with $social-image."

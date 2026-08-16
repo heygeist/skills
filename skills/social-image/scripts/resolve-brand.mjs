@@ -11,26 +11,48 @@ function result(value) {
   console.log(JSON.stringify(value, null, 2));
 }
 
-function findConfig(start) {
+function findWorkspace(start) {
   let current = start;
   while (true) {
-    const candidate = path.join(current, '.social-image', 'active-brand.json');
-    if (fs.existsSync(candidate)) return { workspace: current, config: candidate };
+    const activeBrand = path.join(current, '.social-image', 'active-brand.json');
+    const designSystem = path.join(current, 'DESIGN.md');
+    if (fs.existsSync(activeBrand) || fs.existsSync(designSystem)) {
+      return {
+        workspace: current,
+        activeBrand: fs.existsSync(activeBrand) ? activeBrand : null,
+        designSystem: fs.existsSync(designSystem) ? designSystem : null,
+      };
+    }
     const parent = path.dirname(current);
     if (parent === current) return null;
     current = parent;
   }
 }
 
-const found = findConfig(cursor);
+const found = findWorkspace(cursor);
 if (!found) {
   result({ found: false, start: cursor });
   process.exit(0);
 }
 
+const files = {};
+if (found.designSystem) files.design_system = found.designSystem;
+
+if (!found.activeBrand) {
+  result({
+    found: true,
+    workspace: found.workspace,
+    brand: null,
+    manifest: null,
+    files,
+    optional_assets: {},
+  });
+  process.exit(0);
+}
+
 let active;
 try {
-  active = JSON.parse(fs.readFileSync(found.config, 'utf8'));
+  active = JSON.parse(fs.readFileSync(found.activeBrand, 'utf8'));
 } catch (error) {
   console.error(`invalid active brand config: ${error.message}`);
   process.exit(1);
@@ -62,13 +84,17 @@ try {
   process.exit(1);
 }
 
-if (manifest.schema_version !== 1 || manifest.id !== active.brand) {
-  console.error('brand manifest schema or ID does not match active-brand.json');
+if (manifest.schema_version !== 2 || manifest.id !== active.brand) {
+  console.error('brand manifest must use schema_version 2 and match active-brand.json; rerun its setup skill with --force to migrate');
   process.exit(1);
 }
 
-const required = ['context', 'caption_contract', 'visual_contract', 'theme'];
-const files = {};
+if (!found.designSystem) {
+  console.error(`active brand "${active.brand}" requires DESIGN.md at ${path.join(found.workspace, 'DESIGN.md')}`);
+  process.exit(1);
+}
+
+const required = ['context', 'caption_contract'];
 const missing = [];
 
 for (const key of required) {

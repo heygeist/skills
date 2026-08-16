@@ -10,6 +10,7 @@ const skillDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'
 const temporaryDir = fs.mkdtempSync(path.join(os.tmpdir(), 'social-image-smoke-'));
 const renderer = path.join(skillDir, 'scripts', 'shot.mjs');
 const contactSheet = path.join(skillDir, 'scripts', 'contact-sheet.mjs');
+const resolver = path.join(skillDir, 'scripts', 'resolve-brand.mjs');
 const example = path.join(skillDir, 'assets', 'example.html');
 
 function run(args) {
@@ -26,6 +27,23 @@ function expectFailure(args, expectedMessage) {
 }
 
 try {
+  const designOnlyWorkspace = path.join(temporaryDir, 'design-only');
+  const nestedWorkspace = path.join(designOnlyWorkspace, 'projects', 'sample');
+  fs.mkdirSync(nestedWorkspace, { recursive: true });
+  fs.writeFileSync(path.join(designOnlyWorkspace, 'DESIGN.md'), '---\nname: Smoke\n---\n\n## Overview\n\nSmoke design.\n', 'utf8');
+  const resolved = spawnSync(process.execPath, [resolver, nestedWorkspace], {
+    cwd: skillDir,
+    encoding: 'utf8',
+  });
+  if (resolved.status !== 0) throw new Error(resolved.stderr || 'DESIGN.md resolver failed');
+  const designContext = JSON.parse(resolved.stdout);
+  if (!designContext.found || designContext.brand !== null) {
+    throw new Error('standalone DESIGN.md did not resolve without a context pack');
+  }
+  if (designContext.files.design_system !== path.join(designOnlyWorkspace, 'DESIGN.md')) {
+    throw new Error('standalone DESIGN.md resolved to the wrong path');
+  }
+
   run([renderer, example, '--out', temporaryDir, '--basename', 'smoke', '--preview']);
 
   const expected = [

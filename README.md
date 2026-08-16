@@ -8,15 +8,11 @@ Open-source agent skills maintained by HeyGeist.
 
 Create brand-aware social graphics from full source content and its social copy. The skill proposes headlines, builds structurally different candidates, renders square, landscape, and portrait canvases, verifies provenance, and runs deterministic export gates.
 
-The package is brand-agnostic. It ships with a neutral starter grammar and accepts user-supplied brand guides, tokens, logos, fonts, and authentic captures.
+The package is brand-agnostic. It reads visual identity and reusable design context from the nearest workspace `DESIGN.md`, while still accepting user-supplied logos, fonts, authentic captures, and per-post instructions.
 
 ### `setup-heygeist`
 
-Install the optional HeyGeist context pack into a workspace. It adds HeyGeist terminology, Thai caption guidance, visual tokens, provenance labels, and paths for user-supplied approved assets without changing the generic `social-image` skill.
-
-### `research`
-
-Delegate primary-source research to a background agent and save cited findings using the repository's existing note convention. Visual-identity and design-system research is routed into canonical `DESIGN.md` so downstream coding agents can consume verified tokens and rationale.
+Install HeyGeist's `DESIGN.md` plus an optional non-visual context pack into a workspace. The design file owns tokens, visual rationale, and social-image treatment; the context pack keeps product terminology, Thai caption guidance, and paths for approved assets separate.
 
 ## Local setup
 
@@ -57,15 +53,9 @@ For HeyGeist work, configure each workspace once before creating its first post:
 Use $setup-heygeist to configure this workspace for HeyGeist posts.
 ```
 
-Then invoke `$social-image`. The generic skill discovers `.social-image/active-brand.json` and loads the installed pack automatically.
+Then invoke `$social-image`. The generic skill resolves root `DESIGN.md` as its visual source of truth and loads `.social-image/active-brand.json` only for non-visual context and approved assets.
 
-Other brands can implement the same pack contract under `.social-image/brands/<brand-id>/` without forking the core skill.
-
-Invoke research with:
-
-```text
-Use $research to investigate this against primary sources and save the findings in the appropriate repository artifact.
-```
+Other brands can provide `DESIGN.md` alone or pair it with the same context-pack contract under `.social-image/brands/<brand-id>/` without forking the core skill.
 
 ## Development
 
