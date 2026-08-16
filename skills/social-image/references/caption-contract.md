@@ -1,5 +1,23 @@
 # Caption Contract
 
+## How this contract is used
+
+**Default mode is checking, not writing.** The user supplies the social post copy. Save it
+verbatim as `caption.md`, read it against the rules below, and **report** what you find —
+do not silently edit someone else's words. Offer a rewrite only when asked.
+
+What to report:
+
+- an unsupported performance, quality, or time-saving claim
+- better/worse framing the facts do not carry
+- a specialized term used before it is explained
+- Markdown that will render literally on Facebook
+- a claim the image contradicts, or a hook the caption repeats verbatim
+- a missing honest limitation, or a missing low-friction CTA
+
+The rules below are also the spec for *writing* a caption, on the occasions the user asks
+for one.
+
 ## Voice
 
 - Write Thai-first, conversational copy using `เรา`.
