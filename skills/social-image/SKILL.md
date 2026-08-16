@@ -1,5 +1,5 @@
 ---
-name: geist-facebook-single-image-post
+name: social-image
 description: Create, revise, render, and QA Geist-branded Facebook single-image posts and accompanying Thai captions in this repository. Use when Codex needs to make a one-shot Facebook image, social post cover, two-option comparison graphic, authentic Codex or agent proof crop, or final 1080/2160 Facebook export that follows the Geist brand system.
 ---
 

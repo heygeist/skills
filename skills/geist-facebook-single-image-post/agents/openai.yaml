@@ -1,4 +1,0 @@
-interface:
-  display_name: "Geist Facebook Single Image"
-  short_description: "Create publish-ready Geist Facebook image posts"
-  default_prompt: "Use $geist-facebook-single-image-post to create a publish-ready Geist Facebook single-image post from this topic."

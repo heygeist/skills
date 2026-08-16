@@ -1,0 +1,4 @@
+interface:
+  display_name: "Social Image"
+  short_description: "Create publish-ready Geist Facebook image posts"
+  default_prompt: "Use $social-image to create a publish-ready Geist Facebook single-image post from this topic."
