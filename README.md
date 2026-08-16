@@ -14,6 +14,10 @@ The package is brand-agnostic. It ships with a neutral starter grammar and accep
 
 Install the optional HeyGeist context pack into a workspace. It adds HeyGeist terminology, Thai caption guidance, visual tokens, provenance labels, and paths for user-supplied approved assets without changing the generic `social-image` skill.
 
+### `research`
+
+Delegate primary-source research to a background agent and save cited findings using the repository's existing note convention. Visual-identity and design-system research is routed into canonical `DESIGN.md` so downstream coding agents can consume verified tokens and rationale.
+
 ## Local setup
 
 ```sh
@@ -56,6 +60,12 @@ Use $setup-heygeist to configure this workspace for HeyGeist posts.
 Then invoke `$social-image`. The generic skill discovers `.social-image/active-brand.json` and loads the installed pack automatically.
 
 Other brands can implement the same pack contract under `.social-image/brands/<brand-id>/` without forking the core skill.
+
+Invoke research with:
+
+```text
+Use $research to investigate this against primary sources and save the findings in the appropriate repository artifact.
+```
 
 ## Development
 
