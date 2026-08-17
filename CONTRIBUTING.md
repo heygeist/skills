@@ -5,6 +5,10 @@ Thank you for improving HeyGeist Skills.
 ## Setup
 
 ```sh
+npm ci
+npm run check
+npm test
+
 cd skills/social-image
 npm install
 npx playwright install chromium
@@ -16,6 +20,17 @@ npm install
 npm run check
 npm run smoke
 ```
+
+The root package is the public `npx` installer. Before releasing it, verify the exact tarball contents and run an isolated install:
+
+```sh
+npm pack --dry-run
+npm pack
+npx --yes --package=./heygeist-skills-<version>.tgz heygeist-skills \
+  --target <temporary-skills-directory> --skip-deps
+```
+
+Never publish from an uncommitted worktree. Scoped releases use `npm publish --access public` after the package name, version, tarball contents, tests, and release authorization are confirmed.
 
 ## Social-image rules
 

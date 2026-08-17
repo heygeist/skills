@@ -14,11 +14,50 @@ The package is brand-agnostic. It reads visual identity and reusable design cont
 
 Interview the user, inspect supplied references, and prepare a brand-neutral social-image profile for a workspace. The approved profile uses root `DESIGN.md` for the visual system, `.social-image/context.md` for product context, `.social-image/caption.md` for writing guidance, and a provenance-aware semantic asset library that supports logos, mascots, icons, illustrations, photos, fonts, templates, references, and other media.
 
+## Install with npx
+
+Install both skills for the current user:
+
+```sh
+npx --yes @heygeist/skills@latest
+```
+
+The installer writes to `~/.agents/skills`, installs the social-image runtime dependency, and downloads Playwright Chromium. Restart Codex if the skills do not appear automatically.
+
+Install into the current Git repository instead:
+
+```sh
+npx --yes @heygeist/skills@latest --scope repo
+```
+
+Useful alternatives:
+
+```sh
+# Install one skill
+npx --yes @heygeist/skills@latest social-image
+
+# Preview without writing
+npx --yes @heygeist/skills@latest --scope repo --dry-run
+
+# Replace a changed installation after backing it up
+npx --yes @heygeist/skills@latest --scope repo --force
+
+# Copy only; do not install npm dependencies or Chromium
+npx --yes @heygeist/skills@latest --scope repo --skip-deps
+```
+
+Run `npx --yes @heygeist/skills@latest --help` for every option.
+
 ## Local setup
 
 ```sh
 git clone https://github.com/heygeist/skills.git
-cd skills/skills/social-image
+cd skills
+npm ci
+npm run check
+npm test
+
+cd skills/social-image
 npm install
 npx playwright install chromium
 npm run check
@@ -30,7 +69,7 @@ npm run check
 npm run smoke
 ```
 
-Install or copy the complete `skills/social-image/` folder into a compatible agent skill directory. Keep its `assets/`, `references/`, `scripts/`, package manifest, and lockfile together.
+For manual installation, copy each complete skill folder into `~/.agents/skills/` or `<repo>/.agents/skills/`. Keep its assets, references, scripts, package manifest, and lockfile together.
 
 Invoke it with:
 

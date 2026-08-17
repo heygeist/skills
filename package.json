@@ -1,0 +1,48 @@
+{
+  "name": "@heygeist/skills",
+  "version": "0.1.0",
+  "description": "Install HeyGeist agent skills for Codex with npx.",
+  "type": "module",
+  "bin": {
+    "heygeist-skills": "bin/heygeist-skills.mjs"
+  },
+  "files": [
+    "bin/",
+    "skills/setup-social-image/SKILL.md",
+    "skills/setup-social-image/agents/",
+    "skills/setup-social-image/assets/",
+    "skills/setup-social-image/references/",
+    "skills/setup-social-image/scripts/",
+    "skills/setup-social-image/package.json",
+    "skills/setup-social-image/package-lock.json",
+    "skills/social-image/SKILL.md",
+    "skills/social-image/agents/",
+    "skills/social-image/assets/",
+    "skills/social-image/references/",
+    "skills/social-image/scripts/",
+    "skills/social-image/package.json",
+    "skills/social-image/package-lock.json",
+    "LICENSE",
+    "README.md"
+  ],
+  "scripts": {
+    "check": "node --check bin/heygeist-skills.mjs && node --check scripts/validate-npm-package.mjs && node scripts/validate-npm-package.mjs",
+    "test": "node --test tests/installer.test.mjs",
+    "prepack": "npm run check && npm test"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/heygeist/skills.git"
+  },
+  "homepage": "https://github.com/heygeist/skills#readme",
+  "bugs": {
+    "url": "https://github.com/heygeist/skills/issues"
+  },
+  "license": "MIT"
+}
