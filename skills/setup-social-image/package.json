@@ -1,0 +1,14 @@
+{
+  "name": "@heygeist/setup-social-image-skill",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Collect and install user-approved workspace context for the social-image skill.",
+  "type": "module",
+  "scripts": {
+    "check": "node --check scripts/apply.mjs && node --check scripts/smoke-test.mjs && node --check scripts/validate-package.mjs && node --check scripts/validate-workspace.mjs && node scripts/validate-package.mjs",
+    "smoke": "node scripts/smoke-test.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

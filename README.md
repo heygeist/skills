@@ -8,11 +8,11 @@ Open-source agent skills maintained by HeyGeist.
 
 Create brand-aware social graphics from full source content and its social copy. The skill proposes headlines, builds structurally different candidates, renders square, landscape, and portrait canvases, verifies provenance, and runs deterministic export gates.
 
-The package is brand-agnostic. It ships with a neutral starter grammar and accepts user-supplied brand guides, tokens, logos, fonts, and authentic captures.
+The package is brand-agnostic. It reads visual identity and reusable design context from the nearest workspace `DESIGN.md`, while still accepting user-supplied logos, fonts, authentic captures, and per-post instructions.
 
-### `setup-heygeist`
+### `setup-social-image`
 
-Install the optional HeyGeist context pack into a workspace. It adds HeyGeist terminology, Thai caption guidance, visual tokens, provenance labels, and paths for user-supplied approved assets without changing the generic `social-image` skill.
+Interview the user, inspect supplied references, and prepare a brand-neutral social-image profile for a workspace. The approved profile uses root `DESIGN.md` for the visual system, `.social-image/context.md` for product context, `.social-image/caption.md` for writing guidance, and a provenance-aware semantic asset library that supports logos, mascots, icons, illustrations, photos, fonts, templates, references, and other media.
 
 ## Local setup
 
@@ -24,7 +24,7 @@ npx playwright install chromium
 npm run check
 npm run smoke
 
-cd ../setup-heygeist
+cd ../setup-social-image
 npm install
 npm run check
 npm run smoke
@@ -47,15 +47,15 @@ Brand context and authentic captures:
 [optional paths or instructions]
 ```
 
-For HeyGeist work, configure each workspace once before creating its first post:
+Configure each workspace once before creating its first post:
 
 ```text
-Use $setup-heygeist to configure this workspace for HeyGeist posts.
+Use $setup-social-image to configure this workspace.
 ```
 
-Then invoke `$social-image`. The generic skill discovers `.social-image/active-brand.json` and loads the installed pack automatically.
+Then invoke `$social-image`. It resolves the nearest root `DESIGN.md` together with `.social-image/context.md`, `.social-image/caption.md`, `.social-image/sources.md`, and `.social-image/asset-manifest.json`.
 
-Other brands can implement the same pack contract under `.social-image/brands/<brand-id>/` without forking the core skill.
+Legacy `.social-image/brands/` data may be proposed for migration, but setup never deletes or silently replaces it.
 
 ## Development
 

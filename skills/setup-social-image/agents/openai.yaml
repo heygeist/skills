@@ -1,0 +1,4 @@
+interface:
+  display_name: "Setup Social Image"
+  short_description: "Collect and install reusable social-image context"
+  default_prompt: "Use $setup-social-image to interview me and configure this workspace from my approved brand assets, design references, and post style."

@@ -1,6 +1,6 @@
 ---
 name: social-image
-description: Create, revise, render, and QA brand-aware social images from supplied source content and social copy. Use when Codex needs to produce square, landscape link-card, and portrait social graphics; compare multiple compositions; incorporate authentic screenshots; adapt to a supplied brand kit; or deliver editable HTML and validated PNG exports.
+description: Create, revise, render, and QA brand-aware social images from supplied source content, social copy, and workspace DESIGN.md context. Use when Codex needs to produce square, landscape link-card, and portrait social graphics; compare multiple compositions; incorporate authentic screenshots; adapt to a design system; or deliver editable HTML and validated PNG exports.
 ---
 
 # Social Image
@@ -14,9 +14,9 @@ Obtain both:
 1. The full source content: article, changelog, thread, feature, launch brief, or equivalent.
 2. The social post copy the image will accompany.
 
-Accept pasted text, URLs, or readable local files. Also use any installed brand pack, supplied brand guide, logo, fonts, screenshots, output location, platform requirements, and image-generation policy.
+Accept pasted text, URLs, or readable local files. Also use any discoverable workspace social context, supplied brand guide, logo, fonts, screenshots, output location, platform requirements, and image-generation policy.
 
-If no brand pack or brand context is supplied or discoverable, use the neutral starter grammar in `assets/base.css`. Never invent a logo or imply a brand affiliation.
+If no `DESIGN.md` or brand context is supplied or discoverable, use the neutral starter grammar in `assets/base.css`. Never invent a logo or imply a brand affiliation.
 
 ## Runtime
 
@@ -51,7 +51,7 @@ Keep each post self-contained. Final HTML must continue to render after the skil
 
 ## Load context
 
-1. Read [references/brand-packs.md](references/brand-packs.md) and resolve an active workspace brand pack.
+1. Read [references/workspace-context.md](references/workspace-context.md) and resolve the workspace `DESIGN.md`, reusable context, caption guidance, provenance, and asset library.
 2. Read [references/brand-input.md](references/brand-input.md) when brand material is supplied or branding is requested.
 3. Read [references/layout-grammar.md](references/layout-grammar.md) before composing candidates.
 4. Read [references/visual-contract.md](references/visual-contract.md) before using screenshots, mockups, or generated media.
@@ -69,19 +69,19 @@ Let the caption carry detail and the image carry the hook. Do not repeat the sam
 
 ### 2. Establish the brand layer
 
-Resolve the active workspace pack first:
+Resolve the nearest workspace context first:
 
 ```sh
-node <skill-dir>/scripts/resolve-brand.mjs <workspace>
+node <skill-dir>/scripts/resolve-context.mjs <workspace>
 ```
 
-When a pack is active, read every required file named in its manifest. Treat the pack as brand context, not as a layout template.
+Read every resolved file relevant to the post. Treat `files.design_system` as the canonical visual system, `files.context` as reusable product context, `files.caption_contract` as reusable copy guidance, and `files.sources` plus resolved asset metadata as provenance and usage constraints.
 
-Then use brand sources in this order: explicit instructions for the current post, active brand pack, canonical design tokens, approved logo files, licensed fonts, then representative existing work.
+Then use sources in this order: explicit instructions for the current post, workspace `DESIGN.md`, canonical workspace assets, reusable product and caption context, then reference-only material.
 
-Copy `assets/base.css` into the post's `assets/` directory. Adjust only its `SOCIAL-IMAGE-TOKENS` block and font declarations to match verified brand material. Preserve the structural canvas rules.
+Copy `assets/base.css` into the post's `assets/` directory. Derive its `SOCIAL-IMAGE-TOKENS` block and font declarations from verified `DESIGN.md` roles. Preserve the structural canvas rules; the copied CSS is a self-contained runtime derivative, not a second design-system source.
 
-When no brand source exists, retain the neutral starter tokens and use a plain text brand label only if the user supplies the name. For HeyGeist work, tell a new user to run `$setup-heygeist` once before continuing.
+When no reusable context exists, retain the neutral starter tokens and use a plain text brand label only if the user supplies the name. Offer `$setup-social-image` when the user wants reusable context installed before continuing.
 
 ### 3. Propose three headlines, then wait
 
